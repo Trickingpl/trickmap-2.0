@@ -92,5 +92,25 @@
     "websiteUrl": "Website URL (https://...)",
     "dateStatus": "Date Status",
     "isUpcoming": "Is Upcoming"
+  },
+  "mode": {
+    "events": "Events",
+    "trickspots": "Trickspots"
+  },
+  "spots": {
+    "spots": "spots",
+    "trickspot": "Trickspot",
+    "suggestLocation": "Suggest Location",
+    "spotName": "Spot Name",
+    "spotType": "Type",
+    "type_gym": "Gym",
+    "type_park": "Park",
+    "type_beach": "Beach",
+    "type_other": "Other",
+    "hours": "Hours",
+    "contact": "Contact",
+    "placeholderName": "e.g. LegendTrick Gym",
+    "placeholderHours": "e.g. Mon-Fri 10-22, Sat 12-20",
+    "placeholderContact": "e.g. +48 123 456 789 or email"
   }
 }

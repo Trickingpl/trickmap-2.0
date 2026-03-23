@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import ReactGlobe from 'react-globe.gl';
 import { feature } from 'topojson-client';
-import { STATUS_COLORS, DEFAULT_STATUS_COLOR } from '../constants/status';
+import { STATUS_COLORS, DEFAULT_STATUS_COLOR, SPOT_COLOR } from '../constants/status';
 
 const COUNTRIES_TOPO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
@@ -14,7 +14,7 @@ const polygonSideColor = () => 'rgba(8, 12, 25, 0.7)';
 const polygonStrokeColor = () => 'rgba(60, 100, 180, 0.45)';
 const labelColorFn = () => 'rgba(140, 160, 210, 0.5)';
 
-export default function Globe({ gatherings, onSelect, focusCountry, onHover }) {
+export default function Globe({ gatherings, onSelect, focusCountry, onHover, mode = 'events' }) {
   const globeRef = useRef();
   const [countries, setCountries] = useState(() => countriesCache || []);
   const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
@@ -22,8 +22,10 @@ export default function Globe({ gatherings, onSelect, focusCountry, onHover }) {
   // Stable refs for callbacks used inside imperative marker elements
   const onSelectRef = useRef(onSelect);
   const onHoverRef = useRef(onHover);
+  const modeRef = useRef(mode);
   useEffect(() => { onSelectRef.current = onSelect; }, [onSelect]);
   useEffect(() => { onHoverRef.current = onHover; }, [onHover]);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
 
   // Load country polygons (with cache + abort)
   useEffect(() => {
@@ -116,7 +118,7 @@ export default function Globe({ gatherings, onSelect, focusCountry, onHover }) {
   // Marker element builder — NO dependency on hovered state.
   // Hover styling is applied imperatively via DOM manipulation.
   const markerElement = useCallback((d) => {
-    const color = STATUS_COLORS[d.dateStatus] || DEFAULT_STATUS_COLOR;
+    const color = d.dateStatus ? (STATUS_COLORS[d.dateStatus] || DEFAULT_STATUS_COLOR) : SPOT_COLOR;
 
     const el = document.createElement('div');
     el.style.cssText = `

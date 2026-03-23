@@ -174,9 +174,15 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 .filter-status-btn--active {
-  background: rgba(0, 229, 255, 0.1);
-  border-color: rgba(0, 229, 255, 0.25);
-  color: #00e5ff;
+  background: rgba(0, 230, 118, 0.1);
+  border-color: rgba(0, 230, 118, 0.25);
+  color: #00e676;
+}
+
+.filter-status-btn--spots {
+  background: rgba(179, 136, 255, 0.1);
+  border-color: rgba(179, 136, 255, 0.25);
+  color: #b388ff;
 }
 
 /* Legend */

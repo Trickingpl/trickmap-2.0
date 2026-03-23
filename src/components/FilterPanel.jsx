@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { STATUS_LEGEND } from '../constants/status';
+import { STATUS_LEGEND, SPOT_COLOR } from '../constants/status';
 import './FilterPanel.css';
 
-export default function FilterPanel({ gatherings, onFilter, filteredCount, onSearch }) {
+export default function FilterPanel({ gatherings, onFilter, filteredCount, onSearch, mode = 'events' }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState('');
   const [status, setStatus] = useState('all');
+  const [spotType, setSpotType] = useState('');
   const [search, setSearch] = useState('');
+
+  const isEvents = mode === 'events';
 
   const countries = useMemo(() => {
     const set = new Set(gatherings.map(g => g.country));
@@ -17,12 +20,17 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
 
   const handleCountryChange = (val) => {
     setCountry(val);
-    onFilter({ country: val, status });
+    onFilter({ country: val, status, spotType });
   };
 
   const handleStatusChange = (val) => {
     setStatus(val);
-    onFilter({ country, status: val });
+    onFilter({ country, status: val, spotType });
+  };
+
+  const handleSpotTypeChange = (val) => {
+    setSpotType(val);
+    onFilter({ country, status, spotType: val });
   };
 
   const handleSearch = (val) => {
@@ -33,8 +41,9 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
   const clearFilters = () => {
     setCountry('');
     setStatus('all');
+    setSpotType('');
     setSearch('');
-    onFilter({ country: '', status: 'all' });
+    onFilter({ country: '', status: 'all', spotType: '' });
     onSearch('');
   };
 
@@ -87,36 +96,67 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
           ))}
         </select>
 
-        <label className="filter-label">{t('filters.status')}</label>
-        <div className="filter-status-btns">
-          {[
-            ['all', t('filters.all')],
-            ['upcoming', t('filters.upcoming')],
-          ].map(([val, label]) => (
-            <button
-              key={val}
-              className={`filter-status-btn ${status === val ? 'filter-status-btn--active' : ''}`}
-              onClick={() => handleStatusChange(val)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="filter-divider" />
-
-        <label className="filter-label">{t('filters.legend')}</label>
-        <div className="filter-legend">
-          {STATUS_LEGEND.map(({ color, key: statusKey }) => (
-            <div key={statusKey} className="filter-legend-item">
-              <span className="filter-legend-dot" style={{
-                background: color,
-                boxShadow: `0 0 6px ${color}`,
-              }} />
-              <span className="filter-legend-text">{t(`status.${statusKey}`)}</span>
+        {isEvents ? (
+          <>
+            <label className="filter-label">{t('filters.status')}</label>
+            <div className="filter-status-btns">
+              {[
+                ['all', t('filters.all')],
+                ['upcoming', t('filters.upcoming')],
+              ].map(([val, label]) => (
+                <button
+                  key={val}
+                  className={`filter-status-btn ${status === val ? 'filter-status-btn--active' : ''}`}
+                  onClick={() => handleStatusChange(val)}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+
+            <div className="filter-divider" />
+
+            <label className="filter-label">{t('filters.legend')}</label>
+            <div className="filter-legend">
+              {STATUS_LEGEND.map(({ color, key: statusKey }) => (
+                <div key={statusKey} className="filter-legend-item">
+                  <span className="filter-legend-dot" style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
+                  <span className="filter-legend-text">{t(`status.${statusKey}`)}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <label className="filter-label">{t('spots.spotType')}</label>
+            <div className="filter-status-btns">
+              {[
+                ['', t('filters.all')],
+                ['gym', t('spots.type_gym')],
+                ['park', t('spots.type_park')],
+                ['beach', t('spots.type_beach')],
+              ].map(([val, label]) => (
+                <button
+                  key={val}
+                  className={`filter-status-btn ${spotType === val ? 'filter-status-btn--spots' : ''}`}
+                  onClick={() => handleSpotTypeChange(val)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="filter-divider" />
+
+            <label className="filter-label">{t('filters.legend')}</label>
+            <div className="filter-legend">
+              <div className="filter-legend-item">
+                <span className="filter-legend-dot" style={{ background: SPOT_COLOR, boxShadow: `0 0 6px ${SPOT_COLOR}` }} />
+                <span className="filter-legend-text">{t('spots.trickspot')}</span>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="filter-divider" />
 

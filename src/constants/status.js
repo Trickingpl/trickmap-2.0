@@ -14,3 +14,7 @@ export const STATUS_LEGEND = Object.entries(STATUS_CONFIG).map(([key, v]) => ({
 }));
 
 export const DEFAULT_STATUS_COLOR = STATUS_COLORS.tbd;
+
+export const SPOT_COLOR = '#b388ff';
+
+export const SPOT_TYPES = ['gym', 'park', 'beach', 'other'];
