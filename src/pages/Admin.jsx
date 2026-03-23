@@ -4,7 +4,7 @@ import { sha256, sanitizeUrl } from '../utils/security';
 import './Admin.css';
 
 // SHA-256 hash of the admin password — not the password itself
-const ADMIN_PASSWORD_HASH = 'db877cc8c37f7588b04adb1cd102707aacdbb0f049f8113776f4dac9486a4e7a';
+const ADMIN_PASSWORD_HASH = '7c5079ec1a61e2e65f05921dbb8354d28e89c927ebdc20fedba8a9f780791579';
 
 const SESSION_KEY = 'trickmap_admin_session';
 const MAX_ATTEMPTS = 5;
@@ -21,6 +21,12 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
   const [authed, setAuthed] = useState(() => {
     return sessionStorage.getItem(SESSION_KEY) === 'true';
   });
+
+  // Enable scrolling on admin page (body has overflow:hidden for globe)
+  useEffect(() => {
+    document.body.style.overflow = 'auto';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null);
