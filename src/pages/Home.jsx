@@ -1,22 +1,25 @@
 import { lazy, Suspense, useState, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import GatheringCard from '../components/GatheringCard';
 import FilterPanel from '../components/FilterPanel';
 import HoverTooltip from '../components/HoverTooltip';
 import SuggestForm from '../components/SuggestForm';
+import LanguageSelector from '../components/LanguageSelector';
 import './Home.css';
 
 const Globe = lazy(() => import('../components/Globe'));
 
-function GlobeLoader() {
+function GlobeLoader({ text }) {
   return (
     <div className="globe-loader">
       <div className="globe-loader-spinner" />
-      <p>Loading globe...</p>
+      <p>{text}</p>
     </div>
   );
 }
 
 export default function Home({ gatherings, onSuggest }) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState({ country: '', status: 'all' });
   const [search, setSearch] = useState('');
@@ -60,7 +63,7 @@ export default function Home({ gatherings, onSuggest }) {
         <span className="branding-accent">MAP</span>
       </div>
 
-      <Suspense fallback={<GlobeLoader />}>
+      <Suspense fallback={<GlobeLoader text={t('home.loadingGlobe')} />}>
         <Globe
           gatherings={filtered}
           onSelect={setSelected}
@@ -82,13 +85,12 @@ export default function Home({ gatherings, onSuggest }) {
         <GatheringCard gathering={selected} onClose={() => setSelected(null)} />
       )}
 
-      {/* Suggest event button */}
       <button className="suggest-btn" onClick={() => setShowSuggest(true)}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
-        Suggest Event
+        {t('home.suggestEvent')}
       </button>
 
       {showSuggest && (
@@ -99,10 +101,12 @@ export default function Home({ gatherings, onSuggest }) {
         />
       )}
 
+      <LanguageSelector />
+
       <div className="home-stats">
-        <span className="home-stats-num">{gatherings.length}</span> gatherings
+        <span className="home-stats-num">{gatherings.length}</span> {t('home.gatherings')}
         <span className="home-stats-sep" />
-        <span className="home-stats-num">{countryCount}</span> countries
+        <span className="home-stats-num">{countryCount}</span> {t('home.countries')}
       </div>
     </div>
   );

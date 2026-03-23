@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { STATUS_LEGEND } from '../constants/status';
 import './FilterPanel.css';
 
 export default function FilterPanel({ gatherings, onFilter, filteredCount, onSearch }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState('');
   const [status, setStatus] = useState('all');
@@ -38,7 +40,7 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
 
   return (
     <>
-      <button className="filter-toggle" onClick={() => setOpen(!open)} aria-label="Toggle filters">
+      <button className="filter-toggle" onClick={() => setOpen(!open)} aria-label={t('filters.title')}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="4" y1="6" x2="20" y2="6" />
           <line x1="8" y1="12" x2="20" y2="12" />
@@ -48,8 +50,8 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
 
       <div className={`filter-panel ${open ? 'filter-panel--open' : ''}`}>
         <div className="filter-header">
-          <span className="filter-title">Filters</span>
-          <button className="filter-close" onClick={() => setOpen(false)} aria-label="Close filters">
+          <span className="filter-title">{t('filters.title')}</span>
+          <button className="filter-close" onClick={() => setOpen(false)} aria-label={t('filters.title')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -57,7 +59,6 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
           </button>
         </div>
 
-        {/* Search */}
         <div className="filter-search-wrap">
           <svg className="filter-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
@@ -66,7 +67,7 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
           <input
             className="filter-search"
             type="text"
-            placeholder="Search gatherings..."
+            placeholder={t('filters.searchPlaceholder')}
             value={search}
             onChange={e => handleSearch(e.target.value)}
           />
@@ -74,25 +75,23 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
 
         <div className="filter-divider" />
 
-        {/* Country */}
-        <label className="filter-label">Country</label>
+        <label className="filter-label">{t('filters.country')}</label>
         <select
           className="filter-select"
           value={country}
           onChange={e => handleCountryChange(e.target.value)}
         >
-          <option value="">All Countries</option>
+          <option value="">{t('filters.allCountries')}</option>
           {countries.map(c => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
 
-        {/* Status */}
-        <label className="filter-label">Status</label>
+        <label className="filter-label">{t('filters.status')}</label>
         <div className="filter-status-btns">
           {[
-            ['all', 'All'],
-            ['upcoming', 'Upcoming'],
+            ['all', t('filters.all')],
+            ['upcoming', t('filters.upcoming')],
           ].map(([val, label]) => (
             <button
               key={val}
@@ -106,25 +105,24 @@ export default function FilterPanel({ gatherings, onFilter, filteredCount, onSea
 
         <div className="filter-divider" />
 
-        {/* Legend */}
-        <label className="filter-label">Legend</label>
+        <label className="filter-label">{t('filters.legend')}</label>
         <div className="filter-legend">
-          {STATUS_LEGEND.map(({ color, label }) => (
-            <div key={label} className="filter-legend-item">
+          {STATUS_LEGEND.map(({ color, key: statusKey }) => (
+            <div key={statusKey} className="filter-legend-item">
               <span className="filter-legend-dot" style={{
                 background: color,
                 boxShadow: `0 0 6px ${color}`,
               }} />
-              <span className="filter-legend-text">{label}</span>
+              <span className="filter-legend-text">{t(`status.${statusKey}`)}</span>
             </div>
           ))}
         </div>
 
         <div className="filter-divider" />
 
-        <button className="filter-clear" onClick={clearFilters}>Clear All</button>
+        <button className="filter-clear" onClick={clearFilters}>{t('filters.clearAll')}</button>
 
-        <p className="filter-count">{filteredCount} gatherings</p>
+        <p className="filter-count">{t('filters.gatheringsCount', { count: filteredCount })}</p>
       </div>
     </>
   );

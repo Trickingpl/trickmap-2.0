@@ -1,14 +1,17 @@
+import { useTranslation } from 'react-i18next';
 import { STATUS_CONFIG } from '../constants/status';
 import { sanitizeUrl } from '../utils/security';
 import './GatheringCard.css';
 
 export default function GatheringCard({ gathering, onClose }) {
+  const { t } = useTranslation();
   if (!gathering) return null;
 
   const safeIg = sanitizeUrl(gathering.instagram);
   const safeWebsite = sanitizeUrl(gathering.website);
 
   const status = STATUS_CONFIG[gathering.dateStatus] || STATUS_CONFIG.tbd;
+  const statusLabel = t(`status.${gathering.dateStatus}`) || status.label;
 
   return (
     <div className="card-overlay" onClick={onClose}>
@@ -26,7 +29,7 @@ export default function GatheringCard({ gathering, onClose }) {
         {/* Status badge */}
         <span className="card-badge" style={{ color: status.color, background: status.bg, borderColor: `${status.color}33` }}>
           <span className="card-badge-dot" style={{ background: status.color }} />
-          {status.label}
+          {statusLabel}
         </span>
 
         <h2 className="card-name">{gathering.name}</h2>
@@ -72,7 +75,7 @@ export default function GatheringCard({ gathering, onClose }) {
               rel="noopener noreferrer"
               className="card-website"
             >
-              Visit Website
+              {t('card.visitWebsite')}
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />

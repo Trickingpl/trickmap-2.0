@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SuggestForm.css';
 
 const INITIAL = {
@@ -28,6 +29,7 @@ function formatDateRange(start, end) {
 }
 
 export default function SuggestForm({ gatherings, onSubmit, onClose }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState(INITIAL);
   const [submitted, setSubmitted] = useState(false);
 
@@ -56,8 +58,8 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h3>Submitted!</h3>
-          <p>Your suggestion will be reviewed by the admin.</p>
+          <h3>{t('suggest.submitted')}</h3>
+          <p>{t('suggest.reviewMessage')}</p>
         </div>
       </div>
     );
@@ -67,7 +69,7 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
     <div className="suggest-overlay" onClick={onClose}>
       <div className="suggest-modal" onClick={e => e.stopPropagation()}>
         <div className="suggest-header">
-          <h3>Suggest an Event</h3>
+          <h3>{t('suggest.title')}</h3>
           <button className="suggest-close" onClick={onClose}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -84,20 +86,20 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
               className={`suggest-type-btn ${form.type === 'new' ? 'suggest-type-btn--active' : ''}`}
               onClick={() => update('type', 'new')}
             >
-              New Event
+              {t('suggest.newEvent')}
             </button>
             <button
               type="button"
               className={`suggest-type-btn ${form.type === 'update' ? 'suggest-type-btn--active' : ''}`}
               onClick={() => update('type', 'update')}
             >
-              Update Existing
+              {t('suggest.updateExisting')}
             </button>
           </div>
 
           {form.type === 'update' && (
             <div className="suggest-field">
-              <label>Which event?</label>
+              <label>{t('suggest.whichEvent')}</label>
               <select
                 value={form.existingEventId}
                 onChange={e => {
@@ -107,7 +109,7 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
                 }}
                 required
               >
-                <option value="">Select an event...</option>
+                <option value="">{t('suggest.selectEvent')}</option>
                 {gatherings.map(g => (
                   <option key={g.id} value={g.id}>{g.name} — {g.country}</option>
                 ))}
@@ -118,12 +120,12 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
           {form.type === 'new' && (
             <>
               <div className="suggest-field">
-                <label>Event Name *</label>
+                <label>{t('suggest.eventName')} *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={e => update('name', e.target.value)}
-                  placeholder="e.g. Berlin Tricking Gathering"
+                  placeholder={t('suggest.placeholderName')}
                   required
                   maxLength={100}
                 />
@@ -131,23 +133,23 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
 
               <div className="suggest-row">
                 <div className="suggest-field">
-                  <label>Country *</label>
+                  <label>{t('suggest.country')} *</label>
                   <input
                     type="text"
                     value={form.country}
                     onChange={e => update('country', e.target.value)}
-                    placeholder="e.g. Germany"
+                    placeholder={t('suggest.placeholderCountry')}
                     required
                     maxLength={50}
                   />
                 </div>
                 <div className="suggest-field">
-                  <label>City *</label>
+                  <label>{t('suggest.city')} *</label>
                   <input
                     type="text"
                     value={form.city}
                     onChange={e => update('city', e.target.value)}
-                    placeholder="e.g. Berlin"
+                    placeholder={t('suggest.placeholderCity')}
                     required
                     maxLength={50}
                   />
@@ -158,7 +160,7 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
 
           <div className="suggest-row">
             <div className="suggest-field">
-              <label>Start Date {form.type === 'update' ? '*' : ''}</label>
+              <label>{t('suggest.startDate')} {form.type === 'update' ? '*' : ''}</label>
               <input
                 type="date"
                 value={form.dateStart}
@@ -170,7 +172,7 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
               />
             </div>
             <div className="suggest-field">
-              <label>End Date</label>
+              <label>{t('suggest.endDate')}</label>
               <input
                 type="date"
                 value={form.dateEnd}
@@ -187,40 +189,40 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
 
           {form.type === 'new' && (
             <div className="suggest-field">
-              <label>Instagram</label>
+              <label>{t('suggest.instagram')}</label>
               <input
                 type="text"
                 value={form.instagram}
                 onChange={e => update('instagram', e.target.value)}
-                placeholder="e.g. @berlintricking"
+                placeholder={t('suggest.placeholderIG')}
                 maxLength={100}
               />
             </div>
           )}
 
           <div className="suggest-field">
-            <label>Additional info</label>
+            <label>{t('suggest.additionalInfo')}</label>
             <textarea
               value={form.description}
               onChange={e => update('description', e.target.value)}
-              placeholder={form.type === 'update' ? 'What changed? Any details...' : 'Brief description of the event...'}
+              placeholder={form.type === 'update' ? t('suggest.placeholderDescUpdate') : t('suggest.placeholderDescNew')}
               maxLength={300}
               rows={3}
             />
           </div>
 
           <div className="suggest-field">
-            <label>Your name (optional)</label>
+            <label>{t('suggest.yourName')}</label>
             <input
               type="text"
               value={form.submitterName}
               onChange={e => update('submitterName', e.target.value)}
-              placeholder="So we know who suggested it"
+              placeholder={t('suggest.placeholderSubmitter')}
               maxLength={50}
             />
           </div>
 
-          <button type="submit" className="suggest-submit">Submit Suggestion</button>
+          <button type="submit" className="suggest-submit">{t('suggest.submitSuggestion')}</button>
         </form>
       </div>
     </div>

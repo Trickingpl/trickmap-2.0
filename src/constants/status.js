@@ -8,9 +8,9 @@ export const STATUS_COLORS = Object.fromEntries(
   Object.entries(STATUS_CONFIG).map(([k, v]) => [k, v.color])
 );
 
-export const STATUS_LEGEND = Object.entries(STATUS_CONFIG).map(([, v]) => ({
+export const STATUS_LEGEND = Object.entries(STATUS_CONFIG).map(([key, v]) => ({
+  key,
   color: v.color,
-  label: v.label,
 }));
 
 export const DEFAULT_STATUS_COLOR = STATUS_COLORS.tbd;

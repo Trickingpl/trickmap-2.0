@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { sha256, sanitizeUrl } from '../utils/security';
 import './Admin.css';
 
@@ -18,6 +19,7 @@ const emptyGathering = {
 
 export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, onExport, requests = [], onDismissRequest, onClearRequests, pendingCount = 0 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [authed, setAuthed] = useState(() => {
     return sessionStorage.getItem(SESSION_KEY) === 'true';
   });
@@ -72,7 +74,7 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
     // Check lockout
     if (Date.now() < lockoutUntilRef.current) {
       const secs = Math.ceil((lockoutUntilRef.current - Date.now()) / 1000);
-      setError(`Too many attempts. Try again in ${secs}s.`);
+      setError(t('admin.tooManyAttempts', { secs }));
       return;
     }
 
@@ -88,10 +90,10 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
       if (attemptsRef.current >= MAX_ATTEMPTS) {
         lockoutUntilRef.current = Date.now() + LOCKOUT_MS;
         setLocked(true);
-        setError(`Too many attempts. Locked for 60 seconds.`);
+        setError(t('admin.lockedOut'));
         setTimeout(() => setLocked(false), LOCKOUT_MS);
       } else {
-        setError(`Incorrect password (${MAX_ATTEMPTS - attemptsRef.current} attempts remaining)`);
+        setError(t('admin.incorrectPassword', { remaining: MAX_ATTEMPTS - attemptsRef.current }));
       }
     }
   };
@@ -169,17 +171,17 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
     return (
       <div className="admin-login">
         <form onSubmit={handleLogin} className="admin-login-form">
-          <h2>TrickMap Admin</h2>
+          <h2>{t('admin.title')}</h2>
           <input
             type="password"
-            placeholder="Enter password"
+            placeholder={t('admin.enterPassword')}
             value={password}
             onChange={e => setPassword(e.target.value)}
             autoComplete="off"
             autoFocus
             disabled={locked}
           />
-          <button type="submit" disabled={locked}>Enter</button>
+          <button type="submit" disabled={locked}>{t('admin.enter')}</button>
           {error && <p className="admin-error">{error}</p>}
         </form>
       </div>
@@ -190,14 +192,14 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
     <div className="admin-page">
       <div className="admin-header">
         <button className="admin-back" onClick={() => navigate('/')}>
-          &larr; Back to Globe
+          &larr; {t('admin.backToGlobe')}
         </button>
-        <h1>TrickMap Admin</h1>
+        <h1>{t('admin.title')}</h1>
         <div className="admin-actions">
-          <button className="btn-primary" onClick={openNew}>+ Add New Gathering</button>
-          <button className="btn-secondary" onClick={onExport}>Export JSON</button>
-          <button className="btn-danger" onClick={onReset}>Reset to Original</button>
-          <button className="btn-secondary" onClick={handleLogout}>Logout</button>
+          <button className="btn-primary" onClick={openNew}>{t('admin.addNew')}</button>
+          <button className="btn-secondary" onClick={onExport}>{t('admin.exportJSON')}</button>
+          <button className="btn-danger" onClick={onReset}>{t('admin.resetToOriginal')}</button>
+          <button className="btn-secondary" onClick={handleLogout}>{t('admin.logout')}</button>
         </div>
       </div>
 
@@ -205,12 +207,12 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Country</th>
-              <th>City</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>{t('admin.name')}</th>
+              <th>{t('admin.country')}</th>
+              <th>{t('admin.city')}</th>
+              <th>{t('admin.date')}</th>
+              <th>{t('admin.status')}</th>
+              <th>{t('admin.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -226,14 +228,14 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                   </span>
                 </td>
                 <td>
-                  <button className="btn-sm" onClick={() => openEdit(g)}>Edit</button>
+                  <button className="btn-sm" onClick={() => openEdit(g)}>{t('admin.edit')}</button>
                   {deleteConfirm === g.id ? (
                     <>
-                      <button className="btn-sm btn-danger" onClick={() => handleDelete(g.id)}>Confirm</button>
-                      <button className="btn-sm" onClick={() => setDeleteConfirm(null)}>Cancel</button>
+                      <button className="btn-sm btn-danger" onClick={() => handleDelete(g.id)}>{t('admin.confirm')}</button>
+                      <button className="btn-sm" onClick={() => setDeleteConfirm(null)}>{t('admin.cancel')}</button>
                     </>
                   ) : (
-                    <button className="btn-sm btn-danger" onClick={() => setDeleteConfirm(g.id)}>Delete</button>
+                    <button className="btn-sm btn-danger" onClick={() => setDeleteConfirm(g.id)}>{t('admin.delete')}</button>
                   )}
                 </td>
               </tr>
@@ -247,16 +249,16 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
         <div className="admin-requests">
           <div className="admin-requests-header">
             <h2>
-              Community Requests
+              {t('admin.communityRequests')}
               {pendingCount > 0 && <span className="admin-requests-badge">{pendingCount}</span>}
             </h2>
-            <button className="btn-secondary" onClick={onClearRequests}>Clear All</button>
+            <button className="btn-secondary" onClick={onClearRequests}>{t('admin.clearAll')}</button>
           </div>
           <div className="admin-requests-list">
             {requests.map(r => (
               <div key={r.id} className="admin-request-card">
                 <div className="admin-request-type">
-                  {r.type === 'new' ? 'New Event' : 'Update Request'}
+                  {r.type === 'new' ? t('admin.newEventLabel') : t('admin.updateRequest')}
                 </div>
                 <div className="admin-request-body">
                   {r.type === 'new' ? (
@@ -267,7 +269,7 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                   ) : (
                     <strong>{r.existingEvent}</strong>
                   )}
-                  {r.date && <span className="admin-request-date">Suggested date: {r.date}</span>}
+                  {r.date && <span className="admin-request-date">{t('admin.suggestedDate', { date: r.date })}</span>}
                   {r.instagram && <span className="admin-request-meta">IG: {r.instagram}</span>}
                   {r.description && <p className="admin-request-desc">{r.description}</p>}
                   <span className="admin-request-footer">
@@ -280,9 +282,9 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                     <button className="btn-sm btn-approve" onClick={() => {
                       onUpdate(r.existingEventId, { date: r.date, dateStatus: 'confirmed' });
                       onDismissRequest(r.id);
-                    }}>Approve</button>
+                    }}>{t('admin.approve')}</button>
                   )}
-                  <button className="btn-sm btn-danger" onClick={() => onDismissRequest(r.id)}>Dismiss</button>
+                  <button className="btn-sm btn-danger" onClick={() => onDismissRequest(r.id)}>{t('admin.dismiss')}</button>
                 </div>
               </div>
             ))}
@@ -293,20 +295,20 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
       {editing !== null && (
         <div className="admin-modal-overlay" onClick={() => setEditing(null)}>
           <div className="admin-modal" onClick={e => e.stopPropagation()}>
-            <h2>{editing === 'new' ? 'Add New Gathering' : 'Edit Gathering'}</h2>
+            <h2>{editing === 'new' ? t('admin.addNewGathering') : t('admin.editGathering')}</h2>
             <div className="admin-form">
               {[
-                ['name', 'Name', 'text', true],
-                ['country', 'Country', 'text', true],
-                ['countryCode', 'Country Code (2 letters)', 'text', true],
-                ['city', 'City', 'text', true],
-                ['lat', 'Latitude', 'number', true],
-                ['lng', 'Longitude', 'number', true],
-                ['date', 'Date (free text)', 'text', false],
-                ['description', 'Description', 'textarea', false],
-                ['instagram', 'Instagram URL (https://...)', 'url', false],
-                ['igHandle', 'IG Handle', 'text', false],
-                ['website', 'Website URL (https://...)', 'url', false],
+                ['name', t('admin.name'), 'text', true],
+                ['country', t('admin.country'), 'text', true],
+                ['countryCode', t('admin.countryCode'), 'text', true],
+                ['city', t('admin.city'), 'text', true],
+                ['lat', t('admin.latitude'), 'number', true],
+                ['lng', t('admin.longitude'), 'number', true],
+                ['date', t('admin.dateFreeText'), 'text', false],
+                ['description', t('admin.description'), 'textarea', false],
+                ['instagram', t('admin.instagramUrl'), 'url', false],
+                ['igHandle', t('admin.igHandle'), 'text', false],
+                ['website', t('admin.websiteUrl'), 'url', false],
               ].map(([key, label, type, required]) => (
                 <div key={key} className="form-group">
                   <label>{label}{required ? ' *' : ''}</label>
@@ -329,11 +331,11 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                 </div>
               ))}
               <div className="form-group">
-                <label>Date Status *</label>
+                <label>{t('admin.dateStatus')} *</label>
                 <select value={form.dateStatus} onChange={e => updateField('dateStatus', e.target.value)}>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="tbd">TBD</option>
-                  <option value="past">Past</option>
+                  <option value="confirmed">{t('status.confirmed')}</option>
+                  <option value="tbd">{t('status.tbd')}</option>
+                  <option value="past">{t('status.past')}</option>
                 </select>
               </div>
               <div className="form-group">
@@ -343,12 +345,12 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                     checked={form.isUpcoming}
                     onChange={e => updateField('isUpcoming', e.target.checked)}
                   />
-                  Is Upcoming
+                  {t('admin.isUpcoming')}
                 </label>
               </div>
               <div className="form-actions">
-                <button className="btn-primary" onClick={handleSave}>Save</button>
-                <button className="btn-secondary" onClick={() => setEditing(null)}>Cancel</button>
+                <button className="btn-primary" onClick={handleSave}>{t('admin.save')}</button>
+                <button className="btn-secondary" onClick={() => setEditing(null)}>{t('admin.cancel')}</button>
               </div>
             </div>
           </div>
