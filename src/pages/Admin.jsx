@@ -267,7 +267,7 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                   ) : (
                     <strong>{r.existingEvent}</strong>
                   )}
-                  {r.date && <span className="admin-request-meta">Date: {r.date}</span>}
+                  {r.date && <span className="admin-request-date">Suggested date: {r.date}</span>}
                   {r.instagram && <span className="admin-request-meta">IG: {r.instagram}</span>}
                   {r.description && <p className="admin-request-desc">{r.description}</p>}
                   <span className="admin-request-footer">
@@ -275,7 +275,15 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
                     {new Date(r.submittedAt).toLocaleDateString()}
                   </span>
                 </div>
-                <button className="btn-sm btn-danger" onClick={() => onDismissRequest(r.id)}>Dismiss</button>
+                <div className="admin-request-actions">
+                  {r.type === 'update' && r.date && r.existingEventId && (
+                    <button className="btn-sm btn-approve" onClick={() => {
+                      onUpdate(r.existingEventId, { date: r.date, dateStatus: 'confirmed' });
+                      onDismissRequest(r.id);
+                    }}>Approve</button>
+                  )}
+                  <button className="btn-sm btn-danger" onClick={() => onDismissRequest(r.id)}>Dismiss</button>
+                </div>
               </div>
             ))}
           </div>

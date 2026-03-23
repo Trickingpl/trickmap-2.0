@@ -6,12 +6,26 @@ const INITIAL = {
   name: '',
   country: '',
   city: '',
-  date: '',
+  dateStart: '',
+  dateEnd: '',
   instagram: '',
   description: '',
   existingEvent: '',
+  existingEventId: '',
   submitterName: '',
 };
+
+function formatDateRange(start, end) {
+  if (!start) return 'TBD';
+  const opts = { month: 'long', day: 'numeric', year: 'numeric' };
+  const s = new Date(start + 'T00:00:00');
+  if (!end || end === start) return s.toLocaleDateString('en-US', opts);
+  const e = new Date(end + 'T00:00:00');
+  if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+    return `${s.toLocaleDateString('en-US', { month: 'long' })} ${s.getDate()}–${e.getDate()}, ${s.getFullYear()}`;
+  }
+  return `${s.toLocaleDateString('en-US', opts)} – ${e.toLocaleDateString('en-US', opts)}`;
+}
 
 export default function SuggestForm({ gatherings, onSubmit, onClose }) {
   const [form, setForm] = useState(INITIAL);
@@ -21,7 +35,11 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+    const formatted = {
+      ...form,
+      date: formatDateRange(form.dateStart, form.dateEnd),
+    };
+    onSubmit(formatted);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -81,13 +99,17 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
             <div className="suggest-field">
               <label>Which event?</label>
               <select
-                value={form.existingEvent}
-                onChange={e => update('existingEvent', e.target.value)}
+                value={form.existingEventId}
+                onChange={e => {
+                  const g = gatherings.find(g => g.id === e.target.value);
+                  update('existingEventId', e.target.value);
+                  update('existingEvent', g ? g.name : '');
+                }}
                 required
               >
                 <option value="">Select an event...</option>
                 {gatherings.map(g => (
-                  <option key={g.id} value={g.name}>{g.name} — {g.country}</option>
+                  <option key={g.id} value={g.id}>{g.name} — {g.country}</option>
                 ))}
               </select>
             </div>
@@ -134,17 +156,34 @@ export default function SuggestForm({ gatherings, onSubmit, onClose }) {
             </>
           )}
 
-          <div className="suggest-field">
-            <label>Date {form.type === 'update' ? '(new date) *' : ''}</label>
-            <input
-              type="text"
-              value={form.date}
-              onChange={e => update('date', e.target.value)}
-              placeholder="e.g. July 12-14, 2026 or TBD"
-              required={form.type === 'update'}
-              maxLength={50}
-            />
+          <div className="suggest-row">
+            <div className="suggest-field">
+              <label>Start Date {form.type === 'update' ? '*' : ''}</label>
+              <input
+                type="date"
+                value={form.dateStart}
+                onChange={e => {
+                  update('dateStart', e.target.value);
+                  if (!form.dateEnd || form.dateEnd < e.target.value) update('dateEnd', e.target.value);
+                }}
+                required={form.type === 'update'}
+              />
+            </div>
+            <div className="suggest-field">
+              <label>End Date</label>
+              <input
+                type="date"
+                value={form.dateEnd}
+                onChange={e => update('dateEnd', e.target.value)}
+                min={form.dateStart}
+              />
+            </div>
           </div>
+          {form.dateStart && (
+            <p className="suggest-date-preview">
+              {formatDateRange(form.dateStart, form.dateEnd)}
+            </p>
+          )}
 
           {form.type === 'new' && (
             <div className="suggest-field">
