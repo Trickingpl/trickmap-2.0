@@ -17,6 +17,12 @@ const emptyGathering = {
   instagram: '', igHandle: '', website: '', isUpcoming: true,
 };
 
+const emptySpot = {
+  id: '', name: '', country: '', countryCode: '', city: '',
+  lat: 0, lng: 0, type: 'gym', hours: '', contact: '', description: '',
+  instagram: '', igHandle: '', website: '',
+};
+
 export default function Admin({ gatherings, onAddGathering, onUpdateGathering, onDeleteGathering, onResetGatherings, onExportGatherings, spots = [], onAddSpot, onUpdateSpot, onDeleteSpot, onResetSpots, onExportSpots, requests = [], onDismissRequest, onClearRequests, pendingCount = 0 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -114,7 +120,8 @@ export default function Admin({ gatherings, onAddGathering, onUpdateGathering, o
   const onExport = isEvents ? onExportGatherings : onExportSpots;
 
   const openNew = () => {
-    setForm({ ...emptyGathering, id: crypto.randomUUID() });
+    const template = isEvents ? emptyGathering : emptySpot;
+    setForm({ ...template, id: crypto.randomUUID() });
     setFormErrors({});
     setEditing('new');
   };
@@ -325,9 +332,9 @@ export default function Admin({ gatherings, onAddGathering, onUpdateGathering, o
       {editing !== null && (
         <div className="admin-modal-overlay" onClick={() => setEditing(null)}>
           <div className="admin-modal" onClick={e => e.stopPropagation()}>
-            <h2>{editing === 'new' ? t('admin.addNewGathering') : t('admin.editGathering')}</h2>
+            <h2>{editing === 'new' ? (isEvents ? t('admin.addNewGathering') : t('spots.suggestLocation')) : t('admin.editGathering')}</h2>
             <div className="admin-form">
-              {[
+              {(isEvents ? [
                 ['name', t('admin.name'), 'text', true],
                 ['country', t('admin.country'), 'text', true],
                 ['countryCode', t('admin.countryCode'), 'text', true],
@@ -339,19 +346,32 @@ export default function Admin({ gatherings, onAddGathering, onUpdateGathering, o
                 ['instagram', t('admin.instagramUrl'), 'url', false],
                 ['igHandle', t('admin.igHandle'), 'text', false],
                 ['website', t('admin.websiteUrl'), 'url', false],
-              ].map(([key, label, type, required]) => (
+              ] : [
+                ['name', t('admin.name'), 'text', true],
+                ['country', t('admin.country'), 'text', true],
+                ['countryCode', t('admin.countryCode'), 'text', true],
+                ['city', t('admin.city'), 'text', true],
+                ['lat', t('admin.latitude'), 'number', true],
+                ['lng', t('admin.longitude'), 'number', true],
+                ['hours', t('spots.hours'), 'text', false],
+                ['contact', t('spots.contact'), 'text', false],
+                ['description', t('admin.description'), 'textarea', false],
+                ['instagram', t('admin.instagramUrl'), 'url', false],
+                ['igHandle', t('admin.igHandle'), 'text', false],
+                ['website', t('admin.websiteUrl'), 'url', false],
+              ]).map(([key, label, type, required]) => (
                 <div key={key} className="form-group">
                   <label>{label}{required ? ' *' : ''}</label>
                   {type === 'textarea' ? (
                     <textarea
-                      value={form[key]}
+                      value={form[key] || ''}
                       onChange={e => updateField(key, e.target.value)}
                       maxLength={500}
                     />
                   ) : (
                     <input
                       type={type === 'url' ? 'text' : type}
-                      value={form[key]}
+                      value={form[key] || ''}
                       onChange={e => updateField(key, e.target.value)}
                       required={required}
                       maxLength={type === 'url' ? 200 : 100}
@@ -360,24 +380,38 @@ export default function Admin({ gatherings, onAddGathering, onUpdateGathering, o
                   {formErrors[key] && <span className="form-error">{formErrors[key]}</span>}
                 </div>
               ))}
-              <div className="form-group">
-                <label>{t('admin.dateStatus')} *</label>
-                <select value={form.dateStatus} onChange={e => updateField('dateStatus', e.target.value)}>
-                  <option value="confirmed">{t('status.confirmed')}</option>
-                  <option value="tbd">{t('status.tbd')}</option>
-                  <option value="past">{t('status.past')}</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="toggle-label">
-                  <input
-                    type="checkbox"
-                    checked={form.isUpcoming}
-                    onChange={e => updateField('isUpcoming', e.target.checked)}
-                  />
-                  {t('admin.isUpcoming')}
-                </label>
-              </div>
+              {isEvents ? (
+                <>
+                  <div className="form-group">
+                    <label>{t('admin.dateStatus')} *</label>
+                    <select value={form.dateStatus} onChange={e => updateField('dateStatus', e.target.value)}>
+                      <option value="confirmed">{t('status.confirmed')}</option>
+                      <option value="tbd">{t('status.tbd')}</option>
+                      <option value="past">{t('status.past')}</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="toggle-label">
+                      <input
+                        type="checkbox"
+                        checked={form.isUpcoming}
+                        onChange={e => updateField('isUpcoming', e.target.checked)}
+                      />
+                      {t('admin.isUpcoming')}
+                    </label>
+                  </div>
+                </>
+              ) : (
+                <div className="form-group">
+                  <label>{t('spots.spotType')} *</label>
+                  <select value={form.type || 'gym'} onChange={e => updateField('type', e.target.value)}>
+                    <option value="gym">{t('spots.type_gym')}</option>
+                    <option value="park">{t('spots.type_park')}</option>
+                    <option value="beach">{t('spots.type_beach')}</option>
+                    <option value="other">{t('spots.type_other')}</option>
+                  </select>
+                </div>
+              )}
               <div className="form-actions">
                 <button className="btn-primary" onClick={handleSave}>{t('admin.save')}</button>
                 <button className="btn-secondary" onClick={() => setEditing(null)}>{t('admin.cancel')}</button>
