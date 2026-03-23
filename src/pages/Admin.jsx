@@ -17,7 +17,7 @@ const emptyGathering = {
   instagram: '', igHandle: '', website: '', isUpcoming: true,
 };
 
-export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, onExport, requests = [], onDismissRequest, onClearRequests, pendingCount = 0 }) {
+export default function Admin({ gatherings, onAddGathering, onUpdateGathering, onDeleteGathering, onResetGatherings, onExportGatherings, spots = [], onAddSpot, onUpdateSpot, onDeleteSpot, onResetSpots, onExportSpots, requests = [], onDismissRequest, onClearRequests, pendingCount = 0 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [authed, setAuthed] = useState(() => {
@@ -31,6 +31,7 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
   }, []);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [adminMode, setAdminMode] = useState('events'); // 'events' | 'spots'
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyGathering);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -102,6 +103,15 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
     sessionStorage.removeItem(SESSION_KEY);
     setAuthed(false);
   };
+
+  // Derive current data/callbacks based on mode
+  const isEvents = adminMode === 'events';
+  const currentData = isEvents ? gatherings : spots;
+  const onAdd = isEvents ? onAddGathering : onAddSpot;
+  const onUpdate = isEvents ? onUpdateGathering : onUpdateSpot;
+  const onDelete = isEvents ? onDeleteGathering : onDeleteSpot;
+  const onReset = isEvents ? onResetGatherings : onResetSpots;
+  const onExport = isEvents ? onExportGatherings : onExportSpots;
 
   const openNew = () => {
     setForm({ ...emptyGathering, id: crypto.randomUUID() });
@@ -203,6 +213,22 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
         </div>
       </div>
 
+      {/* Mode toggle */}
+      <div className="admin-mode-toggle">
+        <button
+          className={`admin-mode-btn ${isEvents ? 'admin-mode-btn--events' : ''}`}
+          onClick={() => setAdminMode('events')}
+        >
+          {t('mode.events')} ({gatherings.length})
+        </button>
+        <button
+          className={`admin-mode-btn ${!isEvents ? 'admin-mode-btn--spots' : ''}`}
+          onClick={() => setAdminMode('spots')}
+        >
+          {t('mode.trickspots')} ({spots.length})
+        </button>
+      </div>
+
       <div className="admin-table-wrap">
         <table className="admin-table">
           <thead>
@@ -210,22 +236,26 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
               <th>{t('admin.name')}</th>
               <th>{t('admin.country')}</th>
               <th>{t('admin.city')}</th>
-              <th>{t('admin.date')}</th>
-              <th>{t('admin.status')}</th>
+              <th>{isEvents ? t('admin.date') : t('spots.spotType')}</th>
+              <th>{isEvents ? t('admin.status') : t('spots.hours')}</th>
               <th>{t('admin.actions')}</th>
             </tr>
           </thead>
           <tbody>
-            {gatherings.map(g => (
+            {currentData.map(g => (
               <tr key={g.id}>
                 <td>{g.name}</td>
                 <td>{g.country}</td>
                 <td>{g.city}</td>
-                <td>{g.date}</td>
+                <td>{isEvents ? g.date : (g.type || '—')}</td>
                 <td>
-                  <span className={`status-badge status-${g.dateStatus}`}>
-                    {g.dateStatus}
-                  </span>
+                  {isEvents ? (
+                    <span className={`status-badge status-${g.dateStatus}`}>
+                      {g.dateStatus}
+                    </span>
+                  ) : (
+                    <span className="status-badge status-spot">{g.hours || '—'}</span>
+                  )}
                 </td>
                 <td>
                   <button className="btn-sm" onClick={() => openEdit(g)}>{t('admin.edit')}</button>

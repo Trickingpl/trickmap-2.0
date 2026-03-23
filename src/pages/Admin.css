@@ -55,6 +55,46 @@
   font-size: 13px;
 }
 
+/* Admin mode toggle */
+.admin-mode-toggle {
+  display: flex;
+  gap: 2px;
+  background: #111118;
+  border: 1px solid #1a1a28;
+  border-radius: 9px;
+  padding: 3px;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.admin-mode-btn {
+  padding: 7px 18px;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  color: #555570;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.admin-mode-btn:hover {
+  color: #8888aa;
+}
+.admin-mode-btn--events {
+  background: rgba(0, 230, 118, 0.1);
+  color: #00e676;
+}
+.admin-mode-btn--spots {
+  background: rgba(179, 136, 255, 0.1);
+  color: #b388ff;
+}
+
+.status-badge.status-spot {
+  background: rgba(179, 136, 255, 0.1);
+  color: #b388ff;
+}
+
 /* Admin Panel — override body overflow:hidden from index.css */
 .admin-page {
   min-height: 100vh;
