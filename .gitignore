@@ -5,3 +5,4 @@ dist
 src/assets/
 public/icons.svg
 .claude/
+.vercel

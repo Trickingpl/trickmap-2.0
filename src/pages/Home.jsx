@@ -1,9 +1,20 @@
-import { useState, useMemo, useCallback } from 'react';
-import Globe from '../components/Globe';
+import { lazy, Suspense, useState, useMemo, useCallback } from 'react';
 import GatheringCard from '../components/GatheringCard';
 import FilterPanel from '../components/FilterPanel';
 import HoverTooltip from '../components/HoverTooltip';
 import './Home.css';
+
+// Lazy load Globe — it pulls in Three.js (~1.5MB), load it after initial paint
+const Globe = lazy(() => import('../components/Globe'));
+
+function GlobeLoader() {
+  return (
+    <div className="globe-loader">
+      <div className="globe-loader-spinner" />
+      <p>Loading globe...</p>
+    </div>
+  );
+}
 
 export default function Home({ gatherings }) {
   const [selected, setSelected] = useState(null);
@@ -41,21 +52,21 @@ export default function Home({ gatherings }) {
 
   return (
     <div className="home">
-      {/* Vignette overlay */}
       <div className="vignette" />
 
-      {/* Branding */}
       <div className="branding">
         <span className="branding-mark">TRICK</span>
         <span className="branding-accent">MAP</span>
       </div>
 
-      <Globe
-        gatherings={filtered}
-        onSelect={setSelected}
-        focusCountry={filters.country}
-        onHover={handleHover}
-      />
+      <Suspense fallback={<GlobeLoader />}>
+        <Globe
+          gatherings={filtered}
+          onSelect={setSelected}
+          focusCountry={filters.country}
+          onHover={handleHover}
+        />
+      </Suspense>
 
       <FilterPanel
         gatherings={gatherings}
@@ -70,7 +81,6 @@ export default function Home({ gatherings }) {
         <GatheringCard gathering={selected} onClose={() => setSelected(null)} />
       )}
 
-      {/* Bottom stats */}
       <div className="home-stats">
         <span className="home-stats-num">{gatherings.length}</span> gatherings
         <span className="home-stats-sep" />

@@ -6,6 +6,33 @@
   position: relative;
 }
 
+/* Globe loading screen */
+.globe-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.globe-loader-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  border-top-color: rgba(0, 230, 118, 0.4);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Vignette overlay — frames the globe */
 .vignette {
   position: fixed;

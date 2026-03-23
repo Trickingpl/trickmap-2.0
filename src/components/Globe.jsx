@@ -3,7 +3,7 @@ import ReactGlobe from 'react-globe.gl';
 import { feature } from 'topojson-client';
 import { STATUS_COLORS, DEFAULT_STATUS_COLOR } from '../constants/status';
 
-const COUNTRIES_TOPO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json';
+const COUNTRIES_TOPO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
 // Module-level cache so remounting doesn't re-fetch
 let countriesCache = null;
