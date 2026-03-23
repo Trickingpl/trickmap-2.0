@@ -16,7 +16,7 @@ const emptyGathering = {
   instagram: '', igHandle: '', website: '', isUpcoming: true,
 };
 
-export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, onExport }) {
+export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, onExport, requests = [], onDismissRequest, onClearRequests, pendingCount = 0 }) {
   const navigate = useNavigate();
   const [authed, setAuthed] = useState(() => {
     return sessionStorage.getItem(SESSION_KEY) === 'true';
@@ -241,6 +241,46 @@ export default function Admin({ gatherings, onAdd, onUpdate, onDelete, onReset, 
           </tbody>
         </table>
       </div>
+
+      {/* Community Requests */}
+      {requests.length > 0 && (
+        <div className="admin-requests">
+          <div className="admin-requests-header">
+            <h2>
+              Community Requests
+              {pendingCount > 0 && <span className="admin-requests-badge">{pendingCount}</span>}
+            </h2>
+            <button className="btn-secondary" onClick={onClearRequests}>Clear All</button>
+          </div>
+          <div className="admin-requests-list">
+            {requests.map(r => (
+              <div key={r.id} className="admin-request-card">
+                <div className="admin-request-type">
+                  {r.type === 'new' ? 'New Event' : 'Update Request'}
+                </div>
+                <div className="admin-request-body">
+                  {r.type === 'new' ? (
+                    <>
+                      <strong>{r.name}</strong>
+                      <span className="admin-request-meta">{r.city}, {r.country}</span>
+                    </>
+                  ) : (
+                    <strong>{r.existingEvent}</strong>
+                  )}
+                  {r.date && <span className="admin-request-meta">Date: {r.date}</span>}
+                  {r.instagram && <span className="admin-request-meta">IG: {r.instagram}</span>}
+                  {r.description && <p className="admin-request-desc">{r.description}</p>}
+                  <span className="admin-request-footer">
+                    {r.submitterName && `By ${r.submitterName} · `}
+                    {new Date(r.submittedAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <button className="btn-sm btn-danger" onClick={() => onDismissRequest(r.id)}>Dismiss</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {editing !== null && (
         <div className="admin-modal-overlay" onClick={() => setEditing(null)}>

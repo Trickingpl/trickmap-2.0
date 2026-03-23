@@ -1,0 +1,181 @@
+.suggest-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.suggest-modal {
+  width: 400px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: rgba(12, 14, 22, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.suggest-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 48px 24px;
+}
+.suggest-success h3 {
+  color: #00e676;
+  font-size: 18px;
+  margin: 0;
+}
+.suggest-success p {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  margin: 0;
+}
+.suggest-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 230, 118, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suggest-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.suggest-header h3 {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.suggest-close {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.3);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.suggest-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Type buttons */
+.suggest-type-btns {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.suggest-type-btn {
+  flex: 1;
+  padding: 8px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.suggest-type-btn:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+.suggest-type-btn--active {
+  background: rgba(0, 230, 118, 0.08);
+  border-color: rgba(0, 230, 118, 0.25);
+  color: #00e676;
+}
+
+/* Fields */
+.suggest-field {
+  margin-bottom: 14px;
+}
+.suggest-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.suggest-field input,
+.suggest-field select,
+.suggest-field textarea {
+  width: 100%;
+  padding: 9px 11px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.suggest-field input::placeholder,
+.suggest-field textarea::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+.suggest-field input:focus,
+.suggest-field select:focus,
+.suggest-field textarea:focus {
+  border-color: rgba(0, 230, 118, 0.3);
+}
+.suggest-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.suggest-field select {
+  cursor: pointer;
+}
+
+.suggest-row {
+  display: flex;
+  gap: 10px;
+}
+.suggest-row .suggest-field {
+  flex: 1;
+}
+
+/* Submit */
+.suggest-submit {
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 230, 118, 0.15);
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  color: #00e676;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.suggest-submit:hover {
+  background: rgba(0, 230, 118, 0.22);
+  border-color: rgba(0, 230, 118, 0.4);
+}

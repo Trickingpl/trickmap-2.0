@@ -2,9 +2,9 @@ import { lazy, Suspense, useState, useMemo, useCallback } from 'react';
 import GatheringCard from '../components/GatheringCard';
 import FilterPanel from '../components/FilterPanel';
 import HoverTooltip from '../components/HoverTooltip';
+import SuggestForm from '../components/SuggestForm';
 import './Home.css';
 
-// Lazy load Globe — it pulls in Three.js (~1.5MB), load it after initial paint
 const Globe = lazy(() => import('../components/Globe'));
 
 function GlobeLoader() {
@@ -16,11 +16,12 @@ function GlobeLoader() {
   );
 }
 
-export default function Home({ gatherings }) {
+export default function Home({ gatherings, onSuggest }) {
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState({ country: '', status: 'all' });
   const [search, setSearch] = useState('');
   const [tooltip, setTooltip] = useState({ gathering: null, position: null });
+  const [showSuggest, setShowSuggest] = useState(false);
 
   const filtered = useMemo(() => {
     return gatherings.filter(g => {
@@ -79,6 +80,23 @@ export default function Home({ gatherings }) {
 
       {selected && (
         <GatheringCard gathering={selected} onClose={() => setSelected(null)} />
+      )}
+
+      {/* Suggest event button */}
+      <button className="suggest-btn" onClick={() => setShowSuggest(true)}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Suggest Event
+      </button>
+
+      {showSuggest && (
+        <SuggestForm
+          gatherings={gatherings}
+          onSubmit={onSuggest}
+          onClose={() => setShowSuggest(false)}
+        />
       )}
 
       <div className="home-stats">
