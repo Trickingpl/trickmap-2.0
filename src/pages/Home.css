@@ -1,0 +1,76 @@
+.home {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #060810;
+  position: relative;
+}
+
+/* Vignette overlay — frames the globe */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    transparent 50%,
+    rgba(4, 5, 10, 0.5) 80%,
+    rgba(4, 5, 10, 0.85) 100%
+  );
+}
+
+/* Branding wordmark */
+.branding {
+  position: fixed;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  user-select: none;
+  pointer-events: none;
+}
+
+.branding-mark {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.branding-accent {
+  color: #00e5ff;
+  opacity: 0.7;
+}
+
+/* Bottom stats bar */
+.home-stats {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.18);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.home-stats-num {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-stats-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 6px;
+}
