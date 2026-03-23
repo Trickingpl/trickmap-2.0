@@ -47,10 +47,21 @@
   pointer-events: auto;
 }
 
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.filter-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+
 .filter-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.3);
@@ -62,6 +73,7 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
 .filter-close:hover {
   color: #fff;
