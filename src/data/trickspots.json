@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "pl-spot-01",
+    "name": "AirSpace Rzeszów",
+    "country": "Poland",
+    "countryCode": "PL",
+    "city": "Rzeszów",
+    "lat": 50.02548,
+    "lng": 21.98025,
+    "type": "gym",
+    "hours": "",
+    "contact": "",
+    "description": "Boya Żeleńskiego 15, Rzeszów",
+    "instagram": "",
+    "igHandle": "",
+    "website": null
+  }
+]
