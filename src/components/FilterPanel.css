@@ -28,7 +28,7 @@
   top: 24px;
   left: 24px;
   width: 260px;
-  background: rgba(10, 12, 20, 0.8);
+  background: rgba(10, 12, 20, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -45,6 +45,27 @@
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
+}
+
+.filter-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.3);
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Search */
